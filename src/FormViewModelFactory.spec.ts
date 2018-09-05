@@ -1,17 +1,20 @@
-import FormModelFactory from './FormModelFactory';
+import FormModelFactory from './FormViewModelFactory';
+
+const createFormViewModel(config : any = {}) {
+  const formModelFactory = new FormModelFactory();
+  const formViewModel = formModelFactory.build(config)
+}
 
 describe('FormModelFactory', () => {
   describe('isValid', () => {
     it('should return true if there are no errors', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
+      const formViewModel = createFormViewModel();
       formViewModel.setErrors({});
       expect(formViewModel.isValid).toBe(true);
     });
 
     it('should return false if there are errors', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
+      const formViewModel = createFormViewModel();
       formViewModel.setErrors({a: 1});
       expect(formViewModel.isValid).toBe(false);
     });
@@ -19,23 +22,17 @@ describe('FormModelFactory', () => {
 
   describe('getValueFromInputEvent', () => {
     it('should know how to process a normal string value', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       expect(formViewModel.getValueFromInputEvent({value: 'hello'})).toBe('hello');
     });
 
     it('should know how to process a normal checkbox value', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       expect(formViewModel.getValueFromInputEvent({value: 'hello', checked: true, type: 'checkbox'})).toBe(true);
     });
 
     it('should know how to process a numerical value', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       expect(formViewModel.getValueFromInputEvent({value: 35, type: 'number'})).toBe(35);
 
       expect(formViewModel.getValueFromInputEvent({value: 35, type: 'range'})).toBe(35);
@@ -44,32 +41,24 @@ describe('FormModelFactory', () => {
 
   describe('getNameFromInputEvent', () => {
     it('should know how to process name if given', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       expect(formViewModel.getNameFromInputEvent({name: 'name'})).toBe('name');
     });
 
     it('should take in name still even if id is given', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       expect(formViewModel.getNameFromInputEvent({name: 'name', id: 'blah'})).toBe('name');
     });
 
     it('should fall back to id if name not provided', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       expect(formViewModel.getNameFromInputEvent({id: 'blah'})).toBe('blah');
     });
   });
 
   describe('handleChange', () => {
     it('should handle basic case of textinput', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.handleChange({
         target: {
           name: 'name',
@@ -80,17 +69,13 @@ describe('FormModelFactory', () => {
     });
 
     it('should handle custom case where target not defined', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.handleChange({name: 'name', value: 'Mickey'});
       expect(formViewModel.values.name).toEqual('Mickey');
     });
 
     it('should persist', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       const persist = jest.fn();
       formViewModel.handleChange({name: 'name', value: 'Mickey', persist});
       expect(persist).toHaveBeenCalled();
@@ -100,9 +85,7 @@ describe('FormModelFactory', () => {
 
   describe('handleBlur', () => {
     it('should handle basic case of textinput', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.handleBlur({
         target: {
           name: 'name',
@@ -113,9 +96,7 @@ describe('FormModelFactory', () => {
     });
 
     it('should handle custom case', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.handleBlur({name: 'x'});
       expect(formViewModel.touched.x).toEqual(true);
     });
@@ -123,17 +104,13 @@ describe('FormModelFactory', () => {
 
   describe('setFieldValue', () => {
     it('should literally set the field value', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.setFieldValue('name', 'Mickey');
       expect(formViewModel.values.name).toEqual('Mickey');
     });
 
     it('should literally set the field value, nested', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.setFieldValue('person.name', 'Mickey');
       expect(formViewModel.values.person.name).toEqual('Mickey');
     });
@@ -141,9 +118,7 @@ describe('FormModelFactory', () => {
 
   describe('setValues', () => {
     it('should set the values object', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.setValues({name: 'Mickey'});
       expect(formViewModel.values.name).toEqual('Mickey');
     });
@@ -151,18 +126,14 @@ describe('FormModelFactory', () => {
 
   describe('setFieldTouched', () => {
     it('should set field as touched', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.setFieldTouched('person.name', true);
       expect(formViewModel.touched.person.name).toEqual(true);
     });
 
     it('should handle parent child relationships', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
-      const childFormViewModel = formModelFactory.build({x: 1})
+      const formViewModel = createFormViewModel();
+      const childFormViewModel = createFormViewModel({x: 1})
 
       formViewModel.addChildFormModel(childFormViewModel, "person");
       childFormViewModel.setFieldTouched('name', true);
@@ -172,9 +143,7 @@ describe('FormModelFactory', () => {
 
   describe('setFieldError', () => {
     it('should set field as error', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.setFieldError('person.name', true);
       expect(formViewModel.errors.person.name).toEqual(true);
     });
@@ -182,9 +151,7 @@ describe('FormModelFactory', () => {
 
   describe('setErrors', () => {
     it('should set the errors object', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.setErrors({name: 'Mickey'});
       expect(formViewModel.errors.name).toEqual('Mickey');
     });
@@ -192,9 +159,7 @@ describe('FormModelFactory', () => {
 
   describe('setSubmitting', () => {
     it('should set the value as submitting', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.setSubmitting(true);
       expect(formViewModel.isSubmitting).toEqual(true);
     });
@@ -202,9 +167,7 @@ describe('FormModelFactory', () => {
 
   describe('runValidations', () => {
     it('should run validation schema validation', async() => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.validationSchema = {};
       //@ts-ignore
       formViewModel.runValidationSchema = jest
@@ -215,9 +178,7 @@ describe('FormModelFactory', () => {
     });
 
     it('should run validation schema validation and validate', async() => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.validationSchema = {};
       //@ts-ignore
       formViewModel.runValidationSchema = jest
@@ -231,10 +192,8 @@ describe('FormModelFactory', () => {
     });
 
     it('should handle parent child relationships', async() => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
-      const childFormViewModel = formModelFactory.build()
+      const formViewModel = createFormViewModel();
+      const childFormViewModel = createFormViewModel()
       formViewModel.addChildFormModel(childFormViewModel, "person");
       childFormViewModel.validationSchema = {};
       childFormViewModel.runValidationSchema = jest
@@ -248,9 +207,7 @@ describe('FormModelFactory', () => {
 
   describe('onReset', () => {
     it('should reset the form to its initial values', () => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.initialValues = {
         name: 'Naruto Uzumaki'
       };
@@ -263,9 +220,7 @@ describe('FormModelFactory', () => {
 
   describe('submitForm', () => {
     it('should submit the form (success state)', async() => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.setValues({name: 'Mickey Mouse'});
       formViewModel.onSubmitSuccess = jest.fn();
       formViewModel.onSubmit = jest.fn();
@@ -274,9 +229,7 @@ describe('FormModelFactory', () => {
     });
 
     it('should call onSubmitError since validate returns an object of errors', async() => {
-      const formModelFactory = new FormModelFactory();
-      const formViewModel = formModelFactory.build()
-
+      const formViewModel = createFormViewModel();
       formViewModel.setValues({name: null});
       formViewModel.onSubmitError = jest.fn();
       formViewModel.onSubmit = jest.fn();

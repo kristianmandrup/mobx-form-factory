@@ -58,16 +58,23 @@
     "typescript": "^2.8.3"
   },
   "dependencies": {
+    "@hrgui/mobx-form-model": "^0.4.0",
     "filter-react-props": "^0.0.4",
+    "json-schema-to-yup": "^1.4.0",
     "lodash": "^4.17.10",
     "mobx": "^4.2.1",
-    "mobx-react": "^5.1.2",
-    "@hrgui/mobx-form-model": "^0.4.0"
+    "mobx-react": "^5.1.2"
   },
   "jest": {
-    "moduleFileExtensions": ["ts", "tsx", "js"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
     "setupTestFrameworkScriptFile": "./test/setup.ts",
-    "setupFiles": ["./test/polyfill.ts"],
+    "setupFiles": [
+      "./test/polyfill.ts"
+    ],
     "globals": {
       "ts-jest": {
         "tsConfigFile": "test/tsconfig.test.json"
@@ -80,7 +87,9 @@
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/mocks/fileMock.js",
       "\\.(css|scss)$": "identity-obj-proxy"
     },
-    "testMatch": ["<rootDir>/src/**/*.spec.(ts|tsx)"],
+    "testMatch": [
+      "<rootDir>/src/**/*.spec.(ts|tsx)"
+    ],
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx}",
       "!src/**/*.d.ts",

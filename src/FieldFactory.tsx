@@ -1,8 +1,27 @@
 import {FormFactoryContext} from './FormFactory';
+import {default as FormModelFactory} from './FormViewModelFactory'
 import * as React from 'react';
-import {Observer, observer} from 'mobx-react';
-import filterReactProps from 'filter-react-props';
-import {toJS, isObservable} from 'mobx';
+import {observer} from 'mobx-react';
+
+// TODO: Allow override
+const defaults = {
+  typeComponentMap: {
+    string: 'text',
+    array: 'select',
+    date: 'date',
+    boolean: 'radio'
+  }
+};
+
+export interface FormFactoryProps {
+  modelConstructor?: any;
+  initialValues?: any;
+  model?: FormModelFactory;
+  onSubmitSuccess
+    ?;
+  onSubmitError
+    ?;
+};
 
 @observer
 export default class FieldFactory extends React.Component < any,
@@ -14,22 +33,26 @@ any > {
           if (!model) {
             return null;
           }
-          return (
-            <Observer>
-              {() => {
-                const {
-                  type,
-                  name,
-                  value,
-                  component = 'input',
-                  render
-                } = this.props;
-                return React.createElement(component, {
-                  // ...finalProps
-                });
-              }}
-            </Observer>
-          );
+          const {inputs, typeComponentMap} = model
+          const {type, name} = this.props
+
+          if (type === 'object') {
+            // TODO: nested form
+          }
+
+          const $typeComponentMap = typeComponentMap || defaults.typeComponentMap
+
+          const componentName = $typeComponentMap[type]
+          const component = inputs.named[name] || inputs.generic[componentName]
+
+          const finalProps = {
+            name,
+            component
+          }
+
+          return React.createElement(component, {
+            ...finalProps
+          });
         }}
       </FormFactoryContext.Consumer>
     );

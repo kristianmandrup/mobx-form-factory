@@ -112,11 +112,10 @@ const Person = FormModelFactory.create(models.person);
 export class PersonForm extends React.Component {
   @observable
   person = new Person();
-  formFactory = new FormFactory(this.person);
 
   render() {
     return (
-      <FormFactory factory={formFactory}>
+      <FormFactory model={this.person}>
         <button onClick={this.person.handleSubmit}>Save</button>
       </FormFactory>
     );

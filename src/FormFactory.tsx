@@ -1,25 +1,41 @@
 import {observer} from 'mobx-react';
 import * as React from 'react';
-import FormModelFactory from './FormModelFactory';
-import {isFunction} from 'lodash';
-import {observable} from 'mobx';
-export const FormFactoryContext = React.createContext < FormModelFactory | null | undefined > (null);
+import {ModelForm, FormViewModel} from '@hrgui/mobx-form-model'
+import {default as FormViewModelFactory} from './FormViewModelFactory'
+import {default as FieldFactory} from './FieldFactory'
+export const FormFactoryContext = React.createContext < FormViewModelFactory | null | undefined > (null);
 
 export interface FormFactoryProps {
   modelConstructor?: any;
   initialValues?: any;
-  model?: FormModelFactory;
+  model?: FormViewModel;
+  formSchema : any,
   onSubmitSuccess
     ?;
   onSubmitError
     ?;
 }
 
-@observer
-export default class FormFactory extends React.Component < FormFactoryProps,
-any > {
-  render() {
-    const {children} = this.props;
-    const {model} = this;
-    return ();
+export interface FieldsProps {
+  formSchema?: any;
+}
+
+const Fields = (props : FieldsProps) => {
+    const {formSchema} = props;
+    return formSchema
+      .fieldNames
+      .map((name, index) => (<FieldFactory field={formSchema.fields[name]}/>))
+  }
+
+  @observer
+  export default class FormFactory extends React.Component < FormFactoryProps,
+  any > {
+    render() {
+      const {children, model, formSchema, initialValues} = this.props;
+      return (
+        <ModelForm model={model}>
+          <Fields formSchema={formSchema}/>
+        </ModelForm>
+      )
+    }
   }

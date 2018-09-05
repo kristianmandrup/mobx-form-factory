@@ -48,10 +48,11 @@ describe('FieldFactory', () => {
 
     it('should support fields built via custom builder', () => {
       const modelBuilder = new FormModelFactory();
+      const viewModel = modelBuilder.build()
       const tree = renderer
         .create(
-        <FormFactory builder={modelBuilder}>
-          <Fields builder={modelBuilder.fieldsBuilder}/>
+        <FormFactory model={viewModel}>
+          <Fields formSchema={formSchema}/>
         </FormFactory>
       )
         .toJSON();
