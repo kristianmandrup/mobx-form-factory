@@ -96,6 +96,16 @@ const models = {
   person: {
     form: forms.person,
     inputs,
+    // fieldNames: {
+    //   also: ['birthday']
+    // },
+    fields: {
+      only: {
+        firstName: {
+          type: 'text'
+        }
+      }
+    },
     schema: schemas.person,
     initialValues: {
       firstName: "Mickey",
@@ -106,12 +116,11 @@ const models = {
 };
 
 // creates a Person FormViewModel class
-const Person = FormModelFactory.create(models.person);
 
 @observer
 export class PersonForm extends React.Component {
   @observable
-  person = new Person();
+  const person = FormViewModelFactory.build(models.person);
 
   render() {
     return (

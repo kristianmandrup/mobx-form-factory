@@ -46,19 +46,18 @@ export class FormViewModelFactory {
     this.validationSchema = formSchema.validationSchema || formSchema.schema;
 
     // extend by merging
-    this.fields = {
-      ...this.extractFields(),
-      ...formSchema.fields
-    }
-    this.fieldNames = formSchema.fieldNames || this.extractFieldNames()
-
+    this.fields = this.extractFields(formSchema.fields);
+    this.fieldNames = this.extractFieldNames(formSchema.fieldNames);
   }
 
-  protected extractFieldNames() : string[] {
-    return [
-      ...this.extractFieldNamesFromSchemaProps(),
-      ...this.extractFieldNamesFromFields()
-    ]
+  protected extractFieldNames(fieldNames) : string[] {
+    return fieldNames.only
+      ? fieldNames.only
+      : [
+        ...this.extractFieldNamesFromSchemaProps(),
+        ...this.extractFieldNamesFromFields(),
+        fieldNames.fieldNames.include
+      ];
   }
 
   protected extractFieldNamesFromSchemaProps() {
@@ -68,7 +67,16 @@ export class FormViewModelFactory {
   protected extractFieldNamesFromFields() {
     return Object.keys(this.fields || {})
   }
-  protected extractFields() {
+
+  protected extractFields(fields : any) {
+    return fields.only
+      ? fields.only
+      : {
+        ...this.extractFieldsFromSchema(),
+        ...fields.include
+      }
+  }
+  protected extractFieldsFromSchema() {
     const {properties} = this.validationSchema
     return this
       .fieldNames
