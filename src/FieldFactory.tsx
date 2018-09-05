@@ -1,7 +1,8 @@
 import {FormFactoryContext} from './FormFactory';
-import {default as FormModelFactory} from './FormViewModelFactory'
+import {XFormViewModel} from './FormViewModelFactory'
 import * as React from 'react';
 import {observer} from 'mobx-react';
+import {Field} from '@hrgui/mobx-form-model'
 
 // TODO: Allow override
 const defaults = {
@@ -16,7 +17,7 @@ const defaults = {
 export interface FormFactoryProps {
   modelConstructor?: any;
   initialValues?: any;
-  model?: FormModelFactory;
+  model?: XFormViewModel;
   onSubmitSuccess
     ?;
   onSubmitError
@@ -24,7 +25,7 @@ export interface FormFactoryProps {
 };
 
 @observer
-export default class FieldFactory extends React.Component < any,
+export class FieldFactory extends React.Component < any,
 any > {
   render() {
     return (
@@ -45,14 +46,7 @@ any > {
           const componentName = $typeComponentMap[type]
           const component = inputs.named[name] || inputs.generic[componentName]
 
-          const finalProps = {
-            name,
-            component
-          }
-
-          return React.createElement(component, {
-            ...finalProps
-          });
+          return (<Field {...this.props} component={component}/>)
         }}
       </FormFactoryContext.Consumer>
     );

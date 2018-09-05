@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {shallow} from 'enzyme';
-import {default as FormFactory} from './FormFactory';
-import {default as FormViewModelFactory} from './FormViewModelFactory';
+import {FormFactory} from './FormFactory';
+import {FormViewModelFactory} from './FormViewModelFactory';
 import {wait} from './testUtils';
 import {FormViewModel} from '@hrgui/mobx-form-model'
 
@@ -10,7 +10,26 @@ function createFormModel() {
 }
 
 const schemas = {
-  person: require("./schemas/person.json")
+  person: {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/person.schema.json",
+    "title": "Person",
+    "description": "A person",
+    "type": "object",
+    "properties": {
+      "name": {
+        "description": "Name of the person",
+        "type": "string"
+      },
+      "age": {
+        "description": "Age of person",
+        "type": "number",
+        "exclusiveMinimum": 0,
+        required: true
+      }
+    },
+    "required": ["name"]
+  }
   // ...
 };
 

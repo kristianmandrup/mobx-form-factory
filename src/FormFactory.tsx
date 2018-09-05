@@ -1,19 +1,18 @@
 import {observer} from 'mobx-react';
 import * as React from 'react';
-import {ModelForm, FormViewModel} from '@hrgui/mobx-form-model'
-import {default as FormViewModelFactory} from './FormViewModelFactory'
-import {default as FieldFactory} from './FieldFactory'
+import {ModelForm} from '@hrgui/mobx-form-model'
+import {FormViewModelFactory, XFormViewModel} from './FormViewModelFactory'
+import {FieldFactory} from './FieldFactory'
+
 export const FormFactoryContext = React.createContext < FormViewModelFactory | null | undefined > (null);
 
 export interface FormFactoryProps {
   modelConstructor?: any;
   initialValues?: any;
-  model?: FormViewModel;
-  formSchema : any,
-  onSubmitSuccess
-    ?;
-  onSubmitError
-    ?;
+  model : XFormViewModel;
+  formSchema?: any;
+  onSubmitSuccess?: any;
+  onSubmitError?: any;
 }
 
 export interface FieldsProps {
@@ -28,13 +27,14 @@ const Fields = (props : FieldsProps) => {
   }
 
   @observer
-  export default class FormFactory extends React.Component < FormFactoryProps,
+  export class FormFactory extends React.Component < FormFactoryProps,
   any > {
     render() {
       const {model, formSchema} = this.props;
+      const $formSchema = formSchema || model.formSchema
       return (
         <ModelForm model={model}>
-          <Fields formSchema={formSchema}/>
+          <Fields formSchema={$formSchema}/>
         </ModelForm>
       )
     }

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as renderer from 'react-test-renderer';
-import FieldFactory from './FieldFactory';
-import FormFactory from './FormFactory';
-import FormModelFactory from './FormViewModelFactory';
+import {FieldFactory} from './FieldFactory';
+import {FormFactory} from './FormFactory';
+import {FormViewModelFactory} from './FormViewModelFactory';
 
 const forms = {
   person: {
@@ -22,8 +22,19 @@ const forms = {
   // ...
 };
 
-const formSchema = forms.person
+const config = {
+  // TODO
+}
 
+function createModelBuilder(formSchema : any) {
+  return new FormViewModelFactory(formSchema)
+}
+
+function createViewModel(formSchema : any, config?: any) {
+  return new FormViewModelFactory(formSchema).build(config)
+}
+
+const formSchema = forms.person;
 describe('FieldFactory', () => {
   it('should render null w/o ModelForm', () => {
     const tree = renderer
@@ -33,17 +44,15 @@ describe('FieldFactory', () => {
   });
   describe('Field <=> ModelForm', () => {
     it('should render basic types easily (text, number, radio)', () => {
-      const modelBuilder = new FormModelFactory();
-      const viewModel = modelBuilder.build()
+      const viewModel = createViewModel(config);
       const tree = renderer
-        .create(<FormFactory model={viewModel} formSchema={formSchema}/>)
+        .create(<FormFactory model={viewModel}/>)
         .toJSON();
       expect(tree).toMatchSnapshot();
     });
 
     it('should render basic types easily with a custom type in addition', () => {
-      const modelBuilder = new FormModelFactory();
-      const viewModel = modelBuilder.build()
+      const viewModel = createViewModel(config);
       viewModel.setField('name', {value: 'Mickey Mouse'});
       viewModel.setFields({
         age: {
@@ -63,8 +72,7 @@ describe('FieldFactory', () => {
     });
 
     it('should support fields built via custom builder', () => {
-      const modelBuilder = new FormModelFactory();
-      const viewModel = modelBuilder.build()
+      const viewModel = createViewModel(config);
       const tree = renderer
         .create(
         <FormFactory model={viewModel} formSchema={formSchema}></FormFactory>

@@ -3,11 +3,14 @@ import {set} from 'lodash';
 import {FormViewModel} from '@hrgui/mobx-form-model'
 import {buildYup} from 'json-schema-to-yup'
 
-export default interface IFormViewModelFactory {
+export interface IFormViewModelFactory {
   build(config : any) : FormViewModel;
 };
 
-class XFormViewModel extends FormViewModel {
+export class XFormViewModel extends FormViewModel {
+
+  formSchema : any
+
   setField(key, config : any) {
     const obj = config[key]
     obj.value && this.setFieldValue(key, obj.value)
@@ -24,7 +27,7 @@ class XFormViewModel extends FormViewModel {
   }
 }
 
-export default class FormViewModelFactory {
+export class FormViewModelFactory {
   values : any[]
   inputs : any
   formSchema : any
@@ -38,18 +41,33 @@ export default class FormViewModelFactory {
     this.formSchema = formSchema;
     this.values = formSchema.values;
     this.inputs = formSchema.inputs;
-    // TODO: if not passed in, create from schema
+
     this.yupSchema = formSchema.yupSchema;
     this.validationSchema = formSchema.validationSchema || formSchema.schema;
-    // TODO: extend by merging instead
+
+    // extend by merging
+    this.fields = {
+      ...this.extractFields(),
+      ...formSchema.fields
+    }
     this.fieldNames = formSchema.fieldNames || this.extractFieldNames()
-    this.fields = formSchema.fields || this.extractFields()
+
   }
 
-  protected extractFieldNames() {
+  protected extractFieldNames() : string[] {
+    return [
+      ...this.extractFieldNamesFromSchemaProps(),
+      ...this.extractFieldNamesFromFields()
+    ]
+  }
+
+  protected extractFieldNamesFromSchemaProps() {
     return Object.keys(this.validationSchema.properties || {})
   }
 
+  protected extractFieldNamesFromFields() {
+    return Object.keys(this.fields || {})
+  }
   protected extractFields() {
     const {properties} = this.validationSchema
     return this
@@ -57,14 +75,18 @@ export default class FormViewModelFactory {
       .reduce((acc : any, name : string) => {
         return {
           name,
-          ...properties[name].meta
+          ...this.extractFieldDataFromSchemaProperty(properties[name])
         }
       }, {})
   }
 
+  protected extractFieldDataFromSchemaProperty(property : any) {
+    return property.field || {}
+  }
+
   protected transferFn(name) {
     if (this.formSchema[name]) {
-      this.viewModel.validate = this.formSchema[name];
+      this.viewModel[name] = this.formSchema[name];
       this
         .viewModel[name]
         .bind(this.viewModel);
@@ -80,6 +102,7 @@ export default class FormViewModelFactory {
     const viewModel = new XFormViewModel(this.values);
     viewModel.initialValues = initialValues;
     viewModel.validationSchema = this.yupSchema || buildYup(this.validationSchema);
+    viewModel.formSchema = this.formSchema;
     this.viewModel = viewModel;
     this.transferFns('validate', 'onSubmit', 'onSubmitSuccess');
     return viewModel;
