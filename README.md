@@ -36,24 +36,42 @@ const schemas = {
   // ...
 };
 
-const inputs = {
-  name: props => <input type="text" name={props.name} value={props.value} />,
+const inputs = {}
+
+inputs.generic = {
+  single: {
+    select: props => (
+      <select
+        ...props
+      >
+      {props.options.map(option, index) => {
+        <option name={option.name}>{option.value}</option>
+      }}
+      </select>
+      ,
+  }
+  multi: {
+    select: props => (
+      <MultiSelect
+        ...props
+      />,
+    checkbox: props => (
+      <Checkboxes
+        ...props
+      />
+    )
+  }
+}
+
+inputs.named = {
+  name: props => <input type='text' ...props />,
   number: props => (
-    <input type="number" name={props.name} value={props.value} />
+    <input type='number' ...props />
   ),
-  "multiSelect": props => (
-    <MultiSelect
-      name={props.name}
-      options={props.options}
-      selected={props.selected}
-    />,
-  "checkboxes": props => (
-    <Checkboxes
-      name={props.name}
-      options={props.options}
-      selected={props.selected}
-    />
-  )
+  date: props => (
+    <input type='date' ...props />
+  ),
+  roles: inputs.generic.multi.select
 };
 
 const forms = {
@@ -77,6 +95,7 @@ const forms = {
 const models = {
   person: {
     form: forms.person,
+    inputs,
     schema: schemas.person,
     initialValues: {
       firstName: "Mickey",
@@ -106,6 +125,8 @@ export class PersonForm extends React.Component {
 
 render(<PersonForm />, document.getElementById("root"));
 ```
+
+Note that if you don't specify a forms map value for a given field, it will use the schema metadata to automatically select an appropriate field type. The forms map is only for you to have more control if/when needed.
 
 # How it works
 
