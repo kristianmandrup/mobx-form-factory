@@ -65,12 +65,13 @@ describe('FormFactory', () => {
     }
   };
 
+  const {formSchema} = models.person
   const person = new FormViewModelFactory().build(models.person);
 
   describe('FormFactory: render props API', () => {
     it('should render default formViewModel w/ nothing provided', () => {
       const wrapper = shallow(
-        <FormFactory model={person}></FormFactory>
+        <FormFactory model={person} formSchema={formSchema}></FormFactory>
       );
       expect(wrapper).toBeDefined();
       expect(wrapper.html()).toContain("{}");
@@ -78,7 +79,7 @@ describe('FormFactory', () => {
 
     it('should support basic functionality with initial values', () => {
       const wrapper = shallow(
-        <FormFactory model={person}></FormFactory>
+        <FormFactory model={person} formSchema={formSchema}></FormFactory>
       );
       expect(wrapper).toBeDefined();
       expect(wrapper.html()).toContain(`Harman`);
@@ -93,7 +94,7 @@ describe('FormFactory', () => {
       }
 
       const wrapper = shallow(
-        <FormFactory model={person}></FormFactory>
+        <FormFactory model={person} formSchema={formSchema}></FormFactory>
       );
       expect(wrapper).toBeDefined();
       expect(wrapper.html()).toContain(`Mickey Mouse`);
@@ -103,7 +104,7 @@ describe('FormFactory', () => {
   it('should render w/o crashing', () => {
     const formViewModel = createFormModel();
     const wrapper = shallow(
-      <FormFactory model={person}></FormFactory>
+      <FormFactory model={person} formSchema={formSchema}></FormFactory>
     );
     expect(wrapper).toBeDefined();
   });
@@ -112,7 +113,7 @@ describe('FormFactory', () => {
     const formViewModel = createFormModel();
     const onSubmitSuccess = jest.fn();
     const wrapper = shallow(
-      <FormFactory model={person}></FormFactory>
+      <FormFactory model={person} formSchema={formSchema}></FormFactory>
     );
     const button = wrapper.find('button');
     button.simulate('click');
@@ -125,7 +126,7 @@ describe('FormFactory', () => {
     const formViewModel = createFormModel();
     const onSubmitSuccess = jest.fn();
     const wrapper = shallow(
-      <FormFactory model={person}></FormFactory>
+      <FormFactory model={person} formSchema={formSchema}></FormFactory>
     );
     const button = wrapper.find('button');
     button.simulate('click');
@@ -144,7 +145,7 @@ describe('FormFactory', () => {
     formViewModel.validate = () => ({"name": "Name is required"});
     const onSubmitError = jest.fn();
     const wrapper = shallow(
-      <FormFactory model={person}></FormFactory>
+      <FormFactory model={person} formSchema={formSchema}></FormFactory>
     );
     const button = wrapper.find('button');
     button.simulate('click');

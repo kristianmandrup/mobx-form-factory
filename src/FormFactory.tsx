@@ -31,7 +31,7 @@ const Fields = (props : FieldsProps) => {
   export default class FormFactory extends React.Component < FormFactoryProps,
   any > {
     render() {
-      const {children, model, formSchema, initialValues} = this.props;
+      const {model, formSchema} = this.props;
       return (
         <ModelForm model={model}>
           <Fields formSchema={formSchema}/>
