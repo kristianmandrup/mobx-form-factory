@@ -7,14 +7,16 @@ The form builder leverages the following libraries:
 - [yup](https://github.com/jquense/yup)
 - [json-schema-to-yup](https://www.npmjs.com/package/json-schema-to-yup)
 
-<!-- TOC -->
+## Status
+
+WIP: Under construction...
+
+## TOC
 
 - [Who is this library for?](#who-is-this-library-for)
 - [Example](#example)
 - [How it works](#how-it-works)
 - [API](#api)
-
-<!-- /TOC -->
 
 # Who is this library for?
 
