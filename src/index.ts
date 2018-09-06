@@ -1,6 +1,6 @@
-export {default as FieldFactory}
+export {FieldFactory}
 from './FieldFactory';
-export {default as FormFactory, FormFactoryContext, FormFactoryProps}
-from './FormFactory';
-export {default as FormModelFactory}
+export {AutoForm, FormFactoryContext, AutoFormProps}
+from './AutoForm';
+export {FormViewModelFactory}
 from './FormViewModelFactory';

@@ -1,4 +1,4 @@
-import {FormFactoryContext} from './FormFactory';
+import {FormFactoryContext} from './AutoForm';
 import {XFormViewModel} from './FormViewModelFactory'
 import * as React from 'react';
 import {observer} from 'mobx-react';
@@ -6,7 +6,7 @@ import {Field} from '@hrgui/mobx-form-model'
 
 // TODO: Allow override
 const defaults = {
-  typeComponentMap: {
+  typeFieldMap: {
     string: 'text',
     array: 'select',
     date: 'date',
@@ -41,7 +41,7 @@ any > {
             // TODO: nested form
           }
 
-          const $typeComponentMap = typeComponentMap || defaults.typeComponentMap
+          const $typeComponentMap = typeComponentMap || defaults.typeFieldMap
 
           const componentName = $typeComponentMap[type]
           const component = inputs.named[name] || inputs.generic[componentName]
