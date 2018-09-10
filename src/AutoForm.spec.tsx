@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {shallow} from 'enzyme';
-import {FormFactory} from './FormFactory';
+import {FormFactory} from './AutoForm';
 import {FormViewModelFactory} from './FormViewModelFactory';
 import {wait} from './testUtils';
 import {FormViewModel} from '@hrgui/mobx-form-model'

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as renderer from 'react-test-renderer';
 import {FieldFactory} from './FieldFactory';
-import {FormFactory} from './FormFactory';
+import {FormFactory} from './AutoForm';
 import {FormViewModelFactory} from './FormViewModelFactory';
 
 const forms = {
